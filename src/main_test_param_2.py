@@ -52,7 +52,7 @@ def train (X_train, y_train, quantile_transform = True):
     return model.score(X_train, y_train)
 
 
-def test (X_test, y_test, quantile_transform = True):
+def test(X_test, y_test, quantile_transform = True):
     if quantile_transform:
         X_test = qt.transform(X_test)
     return model.score(X_test, y_test)

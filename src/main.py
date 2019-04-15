@@ -108,5 +108,3 @@ if __name__ == '__main__':
 
     print(f"Train result: {train_results:.2%}")
     print(f"Verification result: {tests_results:.3%}")
-
-
