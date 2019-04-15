@@ -29,8 +29,8 @@ classes, classes_flag = '0, 1, 4, 6, 7', True # Train: 100.000 / Verification: 9
 # classes, classes_flag = '0, 1, 2, 3, 4, 5, 6, 7, 8, 9', True
 
 
-dataFileName = 'data/data10mov_no_abs.mat'
-newDataFileName = 'data/data10mov_raw.mat'  # Структра хранимых данных отличаетя от dataFileName <<< !!!
+dataFileName = '../data/data10mov_no_abs.mat'
+newDataFileName = '../data/data10mov_raw.mat'  # Структра хранимых данных отличаетя от dataFileName <<< !!!
 
 # Создаем экземплр SVM и обучаем классификатор
 # kernel = ('linear', 'poly', 'rbf', 'sigmoid', 'precomputed')

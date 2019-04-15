@@ -25,10 +25,7 @@ def test1(X, y, random_state_list, c_list, gamma_list):
                 result[(rsl, cl, gl)] = (tests_results, train_results)
 
     result = _main.np.array(sorted(result.items(), key=lambda kv: kv[1]))
-    print(result, "len = %s " % len(result), sep='\n\n')
-
-    time.stop_print()
-
+    print(result, f"len = {len(result)}", f"{time.stop()}", sep='\n\n')
 
 # import parameters_test as pt
 # pt.test2(data, classes_flag, classes)
@@ -70,11 +67,11 @@ def test3(data, classes, combinations_len=5):
     import itertools
 
     result = dict()
-    for classes2 in itertools.combinations(classes, combinations_len):
+    for new_classes in itertools.combinations(classes, combinations_len):
 
         X, y = [], []
         for index, value in enumerate(data):
-            if not (_main.classes_flag and index in classes2):
+            if not (_main.classes_flag and index in new_classes):
                 continue
 
             X.extend(value)
@@ -90,7 +87,7 @@ def test3(data, classes, combinations_len=5):
         train_results = _main.train(X_train, y_train) * 100
         tests_results = _main.test(X_test, y_test) * 100
 
-        result[tuple(classes2)] = (tests_results, train_results)
+        result[tuple(new_classes)] = (tests_results, train_results)
 
     result = _main.np.array(sorted(result.items(), key=lambda kv: kv[1]))
     print(result)
