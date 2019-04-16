@@ -23,8 +23,8 @@ model = svm.SVC(kernel='rbf', gamma=gamma, C=C)  # kernel = ('linear', 'poly', '
 qt = QuantileTransformer()
 
 # test global variable
-range_left_cup = range(49, 55)
-range_right_cup = range(44, 55)
+range_left_cup = range(49, 50)
+range_right_cup = range(44, 54)
 cup_flag = True
 
 
@@ -58,7 +58,7 @@ def test(X_test, y_test, quantile_transform = True):
     return model.score(X_test, y_test)
 
 
-def main():
+def main(return_result=False):
     data = read_mat(os.path.abspath(dataFileName))
 
     classes_list = list(map(int, classes.split(",")))
@@ -94,6 +94,15 @@ def main():
 
     print(result, f"Len result: {len(result)}", f"Time: {time.time() - start_time} seconds", sep='\n\n')
 
+    if return_result:
+        return result
 
+
+'''
+    range_left_cup = 49
+    range_right_cup = 44..54
+    Len result: 10
+    Time: 6.125214576721191 seconds
+'''
 if __name__ == '__main__':
     main()

@@ -81,17 +81,11 @@ def test (X_test, y_test, quantile_transform = True):
 if __name__ == '__main__':
     data = read_mat(os.path.abspath(dataFileName))
 
-    classes = list(map(int, classes.split(",")))
-
-    # import parameters_test as pt
-    #     # pt.test2(data, classes_flag, classes)
-
-    # import parameters_test as pt
-    # pt.test3(data, classes, 5)
+    classes_list = list(map(int, classes.split(",")))
 
     X, y = [], []
     for index, value in enumerate(data):
-        if not (classes_flag and index in classes): # optional
+        if not (classes_flag and index in classes_list): # optional
             continue
 
         X.extend(value)

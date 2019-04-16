@@ -57,7 +57,7 @@ def test (X_test, y_test, quantile_transform = True):
     return model.score(X_test, y_test)
 
 
-def main():
+def main(return_result=False):
     global model
 
     data = read_mat(os.path.abspath(dataFileName))
@@ -96,6 +96,16 @@ def main():
 
     print(result, f"Len result: {len(result)}", f"Time: {time.time() - start_time} seconds", sep='\n\n')
 
+    if return_result:
+        return result
 
+
+'''
+    c_list = range(3.5, 5.1, 0.5)
+    gamma_list = range(0.01, 0.03, 0.01)
+    random_state_list = range(45, 46, 1)
+    Len result: 8
+    Time: 3.9376375675201416 seconds
+'''
 if __name__ == '__main__':
     main()

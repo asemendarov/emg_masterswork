@@ -56,7 +56,7 @@ def test (X_test, y_test, quantile_transform = True):
     return model.score(X_test, y_test)
 
 
-def main():
+def main(return_result=False):
     data = read_mat(os.path.abspath(dataFileName))
 
     classes_list = list(map(int, classes.split(",")))
@@ -92,6 +92,15 @@ def main():
 
     print(result, f"Len result: {len(result)}", f"Time: {time.time() - start_time} seconds", sep='\n\n')
 
+    if return_result:
+        return result
 
+
+'''
+    combinations_len = 5
+    classes = 0..9
+    Len result: 252
+    Time: 127.05496525764465 seconds
+'''
 if __name__ == '__main__':
    main()
