@@ -58,13 +58,12 @@ def test(X_test, y_test, quantile_transform = True):
     return model.score(X_test, y_test)
 
 
-if __name__ == '__main__':
+def main():
     data = read_mat(os.path.abspath(dataFileName))
 
-    classes = list(map(int, classes.split(",")))
+    classes_list = list(map(int, classes.split(",")))
 
-    import my_time as time
-    time.start()
+    start_time = time.time()
 
     result = dict()
 
@@ -73,13 +72,13 @@ if __name__ == '__main__':
 
             X, y = [], []
             for index, value in enumerate(data):
-                if not (classes_flag and index in classes): # optional
+                if not (classes_flag and index in classes_list):  # optional
                     continue
 
                 X.extend(value)
                 y.extend([index] * len(value))
 
-            if cup_flag: # optional
+            if cup_flag:  # optional
                 for index, value in enumerate(X):
                     X[index] = value[left_cup:-right_cup]
 
@@ -93,6 +92,8 @@ if __name__ == '__main__':
 
     result = np.array(sorted(result.items(), key=lambda kv: kv[1]))
 
-    print(result, f"Len result: {len(result)}", f"Time: {time.stop()} seconds", sep='\n\n')
+    print(result, f"Len result: {len(result)}", f"Time: {time.time() - start_time} seconds", sep='\n\n')
 
 
+if __name__ == '__main__':
+    main()
