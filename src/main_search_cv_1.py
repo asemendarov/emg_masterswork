@@ -10,41 +10,43 @@ from sklearn import svm
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import QuantileTransformer
 
+from sklearn.model_selection import GridSearchCV
+from sklearn.model_selection import RandomizedSearchCV
+
 # global variable
 C = 4 # Параметр регуляризации SVM
 gamma = 0.02  # Train results: 99.433 / Verification results: 88.123
 test_size = 0.33
 # random_state = 45
-random_state = 1
+split_random_state = 1
 
 # Усечение сигнала слева и справа
-left_cup, right_cup, cup_flag = 100, 70, True
+left_cup, right_cup, cup_flag = 100, 70, False
 
 # Выбор классов
-# classes, classes_flag = '0, 1, 4, 5, 6', True # Train: 100.000 / Verification: 96.183 (cvup = 25) / Verification: 96.947 (cup = [100, 70])
-# classes, classes_flag = '0, 2, 4, 6, 7', True # Train: 100.000 / Verification: 96.947 (cvup = 25) / Verification: 98.473 (cup = [100, 70])
-# classes, classes_flag = '1, 2, 4, 6, 7', True # Train: 100.000 / Verification: 96.947 (cvup = 25) / Verification: 98.473 (cup = [100, 70])
-# classes, classes_flag = '1, 5, 4, 6, 7', True # Train: 100.000 / Verification: 96.947 (cvup = 25) / Verification: 96.183 (cup = [100, 70])
-classes, classes_flag = '0, 1, 4, 6, 7', True # Train: 100.000 / Verification: 96.947 (cvup = 25) / Verification: 98.473 (cup = [100, 70], random_state = 45)
+# classes, classes_flag = '0, 1, 4, 5, 7', True
+# classes, classes_flag = '0, 1, 4, 6, 7', True
+classes, classes_flag = '0, 1, 4, 7, 9', True
 # classes, classes_flag = '0, 1, 2, 3, 4, 5, 6, 7, 8, 9', True
 
-
 dataFileName = '../data/data10mov_no_abs.mat'
-newDataFileName = '../data/data10mov_raw.mat'  # Структра хранимых данных отличаетя от dataFileName <<< !!!
 
-# Создаем экземплр SVM и обучаем классификатор
-# kernel = ('linear', 'poly', 'rbf', 'sigmoid', 'precomputed')
-model = svm.SVC(kernel='rbf', gamma=gamma, C=C)
-models = (svm.SVC(kernel='linear', C=C),
-          svm.LinearSVC(C=C),
-          svm.SVC(kernel='rbf', gamma=gamma, C=C))
-
-# title for the plots
-titles = ('SVC with linear kernel. One-vs-One.',
-          'LinearSVC (linear kernel). One-vs-All.',
-          'SVC with RBF kernel')
+# model = svm.SVC(kernel='rbf', gamma=gamma, C=C)
 
 qt = QuantileTransformer()
+
+# test global variable
+svc = svm.SVC(kernel='rbf')
+parameters = {
+    'C': np.arange(0.5, 5.1, 0.5),
+    'gamma': np.arange(0.01, 0.5, 0.01)
+}
+
+search_random_state = 10
+
+# clf = GridSearchCV(svc, parameters, cv=5, iid=False)              # Time: 96.01495552062988 seconds
+clf = RandomizedSearchCV(svc, parameters, cv=5, iid=False,          # Time: 2.3652467727661133 seconds
+                         random_state=search_random_state)
 
 
 def read_mat(fileName):
@@ -64,17 +66,17 @@ def read_mat(fileName):
     return data
 
 
-def train (X_train, y_train, quantile_transform = True):
+def train(X_train, y_train, quantile_transform = True):
     if quantile_transform:
         X_train = qt.fit_transform(X_train)
-    model.fit(X_train, y_train)
-    return model.score(X_train, y_train)
+    clf.fit(X_train, y_train)
+    return clf.score(X_train, y_train)
 
 
-def test (X_test, y_test, quantile_transform = True):
+def test(X_test, y_test, quantile_transform = True):
     if quantile_transform:
         X_test = qt.transform(X_test)
-    return model.score(X_test, y_test)
+    return clf.score(X_test, y_test)
 
 
 if __name__ == '__main__':
@@ -94,11 +96,17 @@ if __name__ == '__main__':
         for index, value in enumerate(X):
             X[index] = value[left_cup:-right_cup]
 
+    start_time = time.time()                                # time begin (optional)
+
     X_train, X_test, y_train, y_test = train_test_split(
-        X, y, test_size=test_size, random_state=random_state)
+        X, y, test_size=test_size, random_state=split_random_state)
 
     train_results = train(X_train, y_train)
     tests_results = test(X_test, y_test)
 
+    print(f"Time: {time.time() - start_time} seconds")      # time end (optional)
+
     print(f"Train result: {train_results:.2%}")
     print(f"Verification result: {tests_results:.3%}")
+
+    print(f"\nWarning! cup_flag = {cup_flag}")
