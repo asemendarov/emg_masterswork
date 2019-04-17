@@ -18,7 +18,6 @@ test_size = 0.33
 random_state = 1
 
 # Усечение сигнала слева и справа
-# left_cup, right_cup, cup_flag = 1, 1, True
 left_cup, right_cup, cup_flag = 100, 70, True
 
 # Выбор классов
