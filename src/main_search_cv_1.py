@@ -18,13 +18,15 @@ C = 4 # Параметр регуляризации SVM
 gamma = 0.02  # Train results: 99.433 / Verification results: 88.123
 test_size = 0.33
 # random_state = 45
-random_state = 1
+split_random_state = 1
 
 # Усечение сигнала слева и справа
 left_cup, right_cup, cup_flag = 100, 70, False
 
 # Выбор классов
-classes, classes_flag = '0, 1, 4, 6, 7', True
+# classes, classes_flag = '0, 1, 4, 5, 7', True
+# classes, classes_flag = '0, 1, 4, 6, 7', True
+classes, classes_flag = '0, 1, 4, 7, 9', True
 # classes, classes_flag = '0, 1, 2, 3, 4, 5, 6, 7, 8, 9', True
 
 dataFileName = '../data/data10mov_no_abs.mat'
@@ -40,8 +42,11 @@ parameters = {
     'gamma': np.arange(0.01, 0.5, 0.01)
 }
 
-# clf = GridSearchCV(svc, parameters, cv=5, iid=False)            # Time: 96.01495552062988 seconds
-clf = RandomizedSearchCV(svc, parameters, cv=5, iid=False)      # Time: 2.3652467727661133 seconds
+search_random_state = 10
+
+# clf = GridSearchCV(svc, parameters, cv=5, iid=False)              # Time: 96.01495552062988 seconds
+clf = RandomizedSearchCV(svc, parameters, cv=5, iid=False,          # Time: 2.3652467727661133 seconds
+                         random_state=search_random_state)
 
 
 def read_mat(fileName):
@@ -94,7 +99,7 @@ if __name__ == '__main__':
     start_time = time.time()                                # time begin (optional)
 
     X_train, X_test, y_train, y_test = train_test_split(
-        X, y, test_size=test_size, random_state=random_state)
+        X, y, test_size=test_size, random_state=split_random_state)
 
     train_results = train(X_train, y_train)
     tests_results = test(X_test, y_test)
@@ -103,3 +108,5 @@ if __name__ == '__main__':
 
     print(f"Train result: {train_results:.2%}")
     print(f"Verification result: {tests_results:.3%}")
+
+    print(f"\nWarning! cup_flag = {cup_flag}")

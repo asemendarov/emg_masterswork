@@ -6,6 +6,8 @@ import scipy.io as sio
 import sklearn.svm as svm
 import matplotlib.pyplot as plt
 
+import itertools
+
 from sklearn import svm
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import QuantileTransformer
@@ -15,7 +17,7 @@ C = 4
 gamma = 0.02
 test_size = 0.33
 random_state = 1
-left_cup, right_cup, cup_flag = 100, 70, True  # Усечение сигнала слева и справа
+left_cup, right_cup, cup_flag = 100, 70, False  # Усечение сигнала слева и справа
 # classes, classes_flag = '0, 1, 4, 6, 7', True # Выбор классов
 dataFileName = '../data/data10mov_no_abs.mat'
 model = svm.SVC(kernel='rbf', gamma=gamma, C=C)  # kernel = ('linear', 'poly', 'rbf', 'sigmoid', 'precomputed')
@@ -65,7 +67,6 @@ def main(return_result=False):
 
     result = dict()
 
-    import itertools
     for new_classes in itertools.combinations(classes_list, combinations_len):
 
         X, y = [], []
@@ -92,6 +93,8 @@ def main(return_result=False):
 
     print(result, f"Len result: {len(result)}", f"Time: {time.time() - start_time} seconds", sep='\n\n')
 
+    print(f"\nWarning! cup_flag = {cup_flag}")
+
     if return_result:
         return result
 
@@ -99,6 +102,7 @@ def main(return_result=False):
 '''
     combinations_len = 5
     classes = 0..9
+    cup_flag = True
     Len result: 252
     Time: 127.05496525764465 seconds
 '''
