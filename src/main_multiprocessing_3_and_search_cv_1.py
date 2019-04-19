@@ -25,7 +25,7 @@ test_size = 0.33
 random_state = 1
 left_cup, right_cup, cup_flag = 100, 70, False  # Усечение сигнала слева и справа
 # classes, classes_flag = '0, 1, 4, 6, 7', True # Выбор классов
-dataFileName = '../data/data10mov_no_abs.mat'
+fileNameDataSet = '../data/data10mov_no_abs.mat'
 # model = svm.SVC(kernel='rbf', gamma=gamma, C=C)  # kernel = ('linear', 'poly', 'rbf', 'sigmoid', 'precomputed')
 qt = QuantileTransformer()
 
@@ -45,8 +45,8 @@ parameters = {
 clf = RandomizedSearchCV(svc, parameters, cv=5, iid=False)
 
 
-def read_mat(fileName):
-    mat = sio.loadmat(fileName)
+def read_mat(file_name):
+    mat = sio.loadmat(file_name)
     data = pd.Series([value[0] for value in mat['data']], [
         'Кисть вверх',                  # 0
         'Кисть вниз',                   # 1
@@ -98,7 +98,7 @@ def combinations_multiprocessing(data, new_classes):
 
 
 def main(return_result=False):
-    data = read_mat(os.path.abspath(dataFileName))
+    emg_dataset = read_mat(os.path.abspath(fileNameDataSet))
 
     classes_list = list(map(int, classes.split(",")))
 
@@ -109,14 +109,14 @@ def main(return_result=False):
     if multiprocessing_flag:  # optional
         # Code multiprocessing start
         pool = Pool(processes=3)
-        doubler = partial(combinations_multiprocessing, data)
+        doubler = partial(combinations_multiprocessing, emg_dataset)
 
         for key, value in pool.map(doubler, itertools.combinations(classes_list, combinations_len)):
             result[key] = value
         # Code multiprocessing end
     else:
         for new_classes in itertools.combinations(classes_list, combinations_len):
-            key, value = combinations_multiprocessing(data, new_classes)
+            key, value = combinations_multiprocessing(emg_dataset, new_classes)
             result[key] = value
 
     result = np.array(sorted(result.items(), key=lambda kv: kv[1]))
