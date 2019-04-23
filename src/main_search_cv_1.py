@@ -24,9 +24,9 @@ split_random_state = 1
 left_cup, right_cup, cup_flag = 100, 70, False
 
 # Выбор классов
-# classes, classes_flag = '0, 1, 4, 5, 7', True
-# classes, classes_flag = '0, 1, 4, 6, 7', True
-classes, classes_flag = '0, 1, 4, 7, 9', True
+# classes = '0, 1, 4, 5, 7'
+# classes = '0, 1, 4, 6, 7'
+classes = '0, 1, 4, 7, 9'
 
 file_name_data_set = '../data/data10mov_no_abs.mat'
 
@@ -82,7 +82,7 @@ def main():
 
     X, y = [], []
     for index, value in enumerate(emg_data_set):
-        if not (classes_flag and index in classes_list):  # optional
+        if not (index in classes_list):  # optional
             continue
 
         X.extend(value)

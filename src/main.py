@@ -29,7 +29,7 @@ classes = '1, 5, 4, 6, 7' / Train: 100.000 / Ver-on: 96.947 (cvup = 25) / Ver-on
 '''
 
 # Train: 100.000 / Ver-on: 96.947 (cvup = 25) / Ver-on: 98.473 (cup = [100, 70], random_state = 45)
-classes, classes_flag = '0, 1, 4, 6, 7', True
+classes = '0, 1, 4, 6, 7'
 
 fileNameDataSet = '../data/data10mov_no_abs.mat'
 
@@ -85,7 +85,7 @@ if __name__ == '__main__':
 
     X, y = [], []
     for index, value in enumerate(emg_dataset):
-        if not (classes_flag and index in classes_list):  # optional
+        if not (index in classes_list):  # optional
             continue
 
         X.extend(value)

@@ -16,7 +16,7 @@ gamma = 0.02
 test_size = 0.33
 random_state = 1
 left_cup, right_cup, cup_flag = 100, 70, True  # Усечение сигнала слева и справа
-classes, classes_flag = '0, 1, 4, 6, 7', True  # Выбор классов
+classes = '0, 1, 4, 6, 7'  # Выбор классов
 fileNameDataSet = '../data/data10mov_no_abs.mat'
 model = svm.SVC(kernel='rbf', gamma=gamma, C=C)  # kernel = ('linear', 'poly', 'rbf', 'sigmoid', 'precomputed')
 qt = QuantileTransformer()
@@ -66,7 +66,7 @@ def main(return_result=False):
 
     X, y = [], []
     for index, value in enumerate(emg_dataset):
-        if not (classes_flag and index in classes_list):  # optional
+        if not (index in classes_list):  # optional
             continue
 
         X.extend(value)
