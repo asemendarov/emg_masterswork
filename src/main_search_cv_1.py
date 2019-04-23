@@ -27,6 +27,7 @@ left_cup, right_cup, cup_flag = 100, 70, False
 # classes = '0, 1, 4, 5, 7'
 # classes = '0, 1, 4, 6, 7'
 classes = '0, 1, 4, 7, 9'
+# classes = '0, 1, 2, 3, 4, 5, 6, 7, 8, 9'
 
 file_name_data_set = '../data/data10mov_no_abs.mat'
 

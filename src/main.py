@@ -31,7 +31,7 @@ classes = '1, 5, 4, 6, 7' / Train: 100.000 / Ver-on: 96.947 (cvup = 25) / Ver-on
 # Train: 100.000 / Ver-on: 96.947 (cvup = 25) / Ver-on: 98.473 (cup = [100, 70], random_state = 45)
 classes = '0, 1, 4, 6, 7'
 
-fileNameDataSet = '../data/data10mov_no_abs.mat'
+file_name_data_set = '../data/data10mov_no_abs.mat'
 
 # Создаем экземплр SVM и обучаем классификатор
 # kernel = ('linear', 'poly', 'rbf', 'sigmoid', 'precomputed')
@@ -78,13 +78,13 @@ def test(X_test, y_test, quantile_transform=True):
     return model.score(X_test, y_test)
 
 
-if __name__ == '__main__':
-    emg_dataset = read_mat(os.path.abspath(fileNameDataSet))
+def main():
+    emg_data_set = read_mat(os.path.abspath(file_name_data_set))
 
     classes_list = list(map(int, classes.split(",")))
 
     X, y = [], []
-    for index, value in enumerate(emg_dataset):
+    for index, value in enumerate(emg_data_set):
         if not (index in classes_list):  # optional
             continue
 
@@ -95,11 +95,24 @@ if __name__ == '__main__':
         for index, value in enumerate(X):
             X[index] = value[left_cup:-right_cup]
 
+    start_time = time.time()                            # time begin (optional)
+
     X_train, X_test, y_train, y_test = train_test_split(
         X, y, test_size=test_size, random_state=random_state)
 
     train_results = train(X_train, y_train)
     tests_results = test(X_test, y_test)
 
+    print(f"Time: {time.time() - start_time} seconds")  # time end (optional)
+
     print(f"Train result: {train_results:.2%}")
     print(f"Verification result: {tests_results:.3%}")
+
+    print(f"\nWarning! cup_flag = {cup_flag}")
+
+
+'''
+    
+'''
+if __name__ == '__main__':
+    main()

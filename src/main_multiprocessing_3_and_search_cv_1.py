@@ -33,9 +33,12 @@ file_name_data_set = '../data/data10mov_no_abs.mat'
 qt = QuantileTransformer()
 
 # test global variable
-combinations_len = 2
+combinations_len = 10
 search_random_state = 10
-classes = '0, 1, 4, 6, 7'  # Выбор классов
+
+# Выбор классов
+# classes = '0, 1, 4, 6, 7'
+classes = '0, 1, 2, 3, 4, 5, 6, 7, 8, 9'
 
 svc = svm.SVC(kernel='rbf')
 parameters = {
@@ -97,7 +100,7 @@ def combinations_multiprocessing(data, classes_list):
     train_results = train(X_train, y_train)
     tests_results = test(X_test, y_test)
 
-    return tuple(classes_list), (tests_results, train_results)
+    return classes_list, (tests_results, train_results)
 
 
 def main(return_result=False):
