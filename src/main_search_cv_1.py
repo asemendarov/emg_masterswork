@@ -14,11 +14,11 @@ from sklearn.model_selection import GridSearchCV
 from sklearn.model_selection import RandomizedSearchCV
 
 # global variable
-C = 4  # Параметр регуляризации SVM
-gamma = 0.02  # Train results: 99.433 / Verification results: 88.123
+# C = 4
+# gamma = 0.02
 test_size = 0.33
-# random_state = 45
 split_random_state = 1
+# model = svm.SVC(kernel='rbf', gamma=gamma, C=C)
 
 # Усечение сигнала слева и справа
 left_cup, right_cup, cup_flag = 100, 70, False
@@ -27,25 +27,21 @@ left_cup, right_cup, cup_flag = 100, 70, False
 # classes, classes_flag = '0, 1, 4, 5, 7', True
 # classes, classes_flag = '0, 1, 4, 6, 7', True
 classes, classes_flag = '0, 1, 4, 7, 9', True
-# classes, classes_flag = '0, 1, 2, 3, 4, 5, 6, 7, 8, 9', True
 
-fileNameDataSet = '../data/data10mov_no_abs.mat'
-
-# model = svm.SVC(kernel='rbf', gamma=gamma, C=C)
+file_name_data_set = '../data/data10mov_no_abs.mat'
 
 qt = QuantileTransformer()
 
 # test global variable
+search_random_state = 10
 svc = svm.SVC(kernel='rbf')
 parameters = {
     'C': np.arange(0.5, 5.1, 0.5),
     'gamma': np.arange(0.01, 0.5, 0.01)
 }
 
-search_random_state = 10
-
-# clf = GridSearchCV(svc, parameters, cv=5, iid=False)              # Time: 96.01495552062988 seconds
-clf = RandomizedSearchCV(svc, parameters, cv=5, iid=False,          # Time: 2.3652467727661133 seconds
+# clf = GridSearchCV(svc, parameters, cv=5, iid=False)
+clf = RandomizedSearchCV(svc, parameters, cv=5, iid=False,
                          random_state=search_random_state)
 
 
@@ -79,24 +75,24 @@ def test(X_test, y_test, quantile_transform=True):
     return clf.score(X_test, y_test)
 
 
-if __name__ == '__main__':
-    emg_dataset = read_mat(os.path.abspath(fileNameDataSet))
+def main():
+    emg_data_set = read_mat(os.path.abspath(file_name_data_set))
 
     classes_list = list(map(int, classes.split(",")))
 
     X, y = [], []
-    for index, value in enumerate(emg_dataset):
-        if not (classes_flag and index in classes_list): # optional
+    for index, value in enumerate(emg_data_set):
+        if not (classes_flag and index in classes_list):  # optional
             continue
 
         X.extend(value)
         y.extend([index] * len(value))
 
-    if cup_flag: # optional
+    if cup_flag:                                          # optional
         for index, value in enumerate(X):
             X[index] = value[left_cup:-right_cup]
 
-    start_time = time.time()                                # time begin (optional)
+    start_time = time.time()                            # time begin (optional)
 
     X_train, X_test, y_train, y_test = train_test_split(
         X, y, test_size=test_size, random_state=split_random_state)
@@ -104,9 +100,13 @@ if __name__ == '__main__':
     train_results = train(X_train, y_train)
     tests_results = test(X_test, y_test)
 
-    print(f"Time: {time.time() - start_time} seconds")      # time end (optional)
+    print(f"Time: {time.time() - start_time} seconds")  # time end (optional)
 
     print(f"Train result: {train_results:.2%}")
     print(f"Verification result: {tests_results:.3%}")
 
     print(f"\nWarning! cup_flag = {cup_flag}")
+
+
+if __name__ == '__main__':
+    main()

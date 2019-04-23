@@ -19,21 +19,23 @@ from sklearn.model_selection import GridSearchCV
 from sklearn.model_selection import RandomizedSearchCV
 
 # global variable
-C = 4
-gamma = 0.02
+# C = 4
+# gamma = 0.02
 test_size = 0.33
 random_state = 1
-left_cup, right_cup, cup_flag = 100, 70, False  # Усечение сигнала слева и справа
-# classes, classes_flag = '0, 1, 4, 6, 7', True # Выбор классов
-fileNameDataSet = '../data/data10mov_no_abs.mat'
-# model = svm.SVC(kernel='rbf', gamma=gamma, C=C)  # kernel = ('linear', 'poly', 'rbf', 'sigmoid', 'precomputed')
+# model = svm.SVC(kernel='rbf', gamma=gamma, C=C)
+
+# Усечение сигнала слева и справа
+left_cup, right_cup, cup_flag = 100, 70, False
+
+file_name_data_set = '../data/data10mov_no_abs.mat'
+
 qt = QuantileTransformer()
 
 # test global variable
-combinations_len = 5
-classes, classes_flag = '0, 1, 2, 3, 4, 5, 6, 7, 8, 9', True
-
-multiprocessing_flag = True
+combinations_len = 9
+search_random_state = 10
+classes, classes_flag = '0, 1, 4, 6, 7', False  # Выбор классов
 
 svc = svm.SVC(kernel='rbf')
 parameters = {
@@ -42,7 +44,8 @@ parameters = {
 }
 
 # clf = GridSearchCV(svc, parameters, cv=5, iid=False)
-clf = RandomizedSearchCV(svc, parameters, cv=5, iid=False)
+clf = RandomizedSearchCV(svc, parameters, cv=5, iid=False,
+                         random_state=search_random_state)
 
 
 def read_mat(file_name):
@@ -75,10 +78,10 @@ def test(X_test, y_test, quantile_transform=True):
     return clf.score(X_test, y_test)
 
 
-def combinations_multiprocessing(data, new_classes):
+def combinations_multiprocessing(data, classes_list):
     X, y = [], []
     for index, value in enumerate(data):
-        if not (classes_flag and index in new_classes):  # optional
+        if not (classes_flag and index in classes_list):  # optional
             continue
 
         X.extend(value)
@@ -94,11 +97,11 @@ def combinations_multiprocessing(data, new_classes):
     train_results = train(X_train, y_train)
     tests_results = test(X_test, y_test)
 
-    return tuple(new_classes), (tests_results, train_results)
+    return tuple(classes_list), (tests_results, train_results)
 
 
 def main(return_result=False):
-    emg_dataset = read_mat(os.path.abspath(fileNameDataSet))
+    emg_dataset = read_mat(os.path.abspath(file_name_data_set))
 
     classes_list = list(map(int, classes.split(",")))
 
@@ -106,18 +109,13 @@ def main(return_result=False):
 
     result = dict()
 
-    if multiprocessing_flag:  # optional
-        # Code multiprocessing start
-        pool = Pool(processes=3)
-        doubler = partial(combinations_multiprocessing, emg_dataset)
+    # Code multiprocessing -start
+    pool = Pool(processes=3)
+    doubler = partial(combinations_multiprocessing, emg_dataset)
 
-        for key, value in pool.map(doubler, itertools.combinations(classes_list, combinations_len)):
-            result[key] = value
-        # Code multiprocessing end
-    else:
-        for new_classes in itertools.combinations(classes_list, combinations_len):
-            key, value = combinations_multiprocessing(emg_dataset, new_classes)
-            result[key] = value
+    for key, value in pool.map(doubler, itertools.combinations(classes_list, combinations_len)):
+        result[key] = value
+    # Code multiprocessing -end
 
     result = np.array(sorted(result.items(), key=lambda kv: kv[1]))
 
