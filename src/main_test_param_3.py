@@ -58,7 +58,7 @@ def test(X_test, y_test, quantile_transform=True):
     return model.score(X_test, y_test)
 
 
-def main(return_result=False):
+def main():
     emg_dataset = read_mat(os.path.abspath(fileNameDataSet))
 
     classes_list = list(map(int, classes.split(",")))
@@ -71,7 +71,7 @@ def main(return_result=False):
 
         X, y = [], []
         for index, value in enumerate(emg_dataset):
-            if not (classes_flag and index in new_classes):  # optional
+            if not (index in new_classes):  # optional
                 continue
 
             X.extend(value)
@@ -95,8 +95,7 @@ def main(return_result=False):
 
     print(f"\nWarning! cup_flag = {cup_flag}")
 
-    if return_result:
-        return result
+    return result
 
 
 '''

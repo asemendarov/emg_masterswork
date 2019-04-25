@@ -57,7 +57,7 @@ def test(X_test, y_test, quantile_transform=True):
     return model.score(X_test, y_test)
 
 
-def main(return_result=False):
+def main():
     global model
 
     emg_dataset = read_mat(os.path.abspath(fileNameDataSet))
@@ -96,8 +96,7 @@ def main(return_result=False):
 
     print(result, f"Len result: {len(result)}", f"Time: {time.time() - start_time} seconds", sep='\n\n')
 
-    if return_result:
-        return result
+    return result
 
 
 '''

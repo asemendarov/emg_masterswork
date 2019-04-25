@@ -6,6 +6,11 @@ import scipy.io as sio
 import sklearn.svm as svm
 import matplotlib.pyplot as plt
 
+import itertools
+
+from multiprocessing import Pool
+from functools import partial
+
 from sklearn import svm
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import QuantileTransformer
@@ -17,28 +22,28 @@ from sklearn.model_selection import RandomizedSearchCV
 # C = 4
 # gamma = 0.02
 test_size = 0.33
-split_random_state = 1
+random_state = 1
 # model = svm.SVC(kernel='rbf', gamma=gamma, C=C)
 
 # Усечение сигнала слева и справа
 left_cup, right_cup, cup_flag = 100, 70, False
-
-# Выбор классов
-# classes = '0, 1, 4, 5, 7'
-# classes = '0, 1, 4, 6, 7'
-classes = '0, 1, 4, 7, 9'
-# classes = '0, 1, 2, 3, 4, 5, 6, 7, 8, 9'
 
 file_name_data_set = '../data/data10mov_no_abs.mat'
 
 qt = QuantileTransformer()
 
 # test global variable
+combinations_len = 9
 search_random_state = 10
+
+# Выбор классов
+# classes = '0, 1, 4, 6, 7'
+classes = '0, 1, 2, 3, 4, 5, 6, 7, 8, 9'
+
 svc = svm.SVC(kernel='rbf')
 parameters = {
-    'C': np.arange(0.5, 5.1, 0.5),
-    'gamma': np.arange(0.01, 0.5, 0.01)
+    'C': np.arange(1, 5.1, 1),
+    'gamma': np.arange(0.01, 0.1, 0.01)
 }
 
 # clf = GridSearchCV(svc, parameters, cv=5, iid=False)
@@ -76,38 +81,56 @@ def test(X_test, y_test, quantile_transform=True):
     return clf.score(X_test, y_test)
 
 
-def main():
-    emg_data_set = read_mat(os.path.abspath(file_name_data_set))
-
-    classes_list = list(map(int, classes.split(",")))
-
+def combinations_multiprocessing(data, classes_list):
     X, y = [], []
-    for index, value in enumerate(emg_data_set):
+    for index, value in enumerate(data):
         if not (index in classes_list):  # optional
             continue
 
         X.extend(value)
         y.extend([index] * len(value))
 
-    if cup_flag:                                          # optional
+    if cup_flag:  # optional
         for index, value in enumerate(X):
             X[index] = value[left_cup:-right_cup]
 
-    start_time = time.time()                            # time begin (optional)
-
     X_train, X_test, y_train, y_test = train_test_split(
-        X, y, test_size=test_size, random_state=split_random_state)
+        X, y, test_size=test_size, random_state=random_state)
 
     train_results = train(X_train, y_train)
     tests_results = test(X_test, y_test)
 
-    print(f"Time: {time.time() - start_time} seconds")  # time end (optional)
-
-    print(f"Train result: {train_results:.2%}")
-    print(f"Verification result: {tests_results:.3%}")
-
-    print(f"\nWarning! cup_flag = {cup_flag}")
+    return classes_list, (tests_results, train_results)
 
 
+def main(print_result=True) -> list:
+    emg_dataset = read_mat(os.path.abspath(file_name_data_set))
+
+    classes_list = list(map(int, classes.split(",")))
+
+    start_time = time.time()
+
+    result = list()
+
+    # Code multiprocessing -start
+    pool = Pool(processes=3)
+    doubler = partial(combinations_multiprocessing, emg_dataset)
+
+    for out_pool in pool.map(doubler, itertools.combinations(classes_list, combinations_len)):
+        result.append(out_pool)
+    # Code multiprocessing -end
+
+    result = sorted(result, key=lambda kv: kv[1])
+
+    if print_result:
+        print(np.array(result), f"Len result: {len(result)}", f"Time: {time.time() - start_time} seconds", sep='\n\n')
+        print(f"\nWarning! cup_flag = {cup_flag}")
+
+    return result
+
+
+'''
+    
+'''
 if __name__ == '__main__':
     main()

@@ -10,42 +10,40 @@ from sklearn import svm
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import QuantileTransformer
 
+from sklearn.model_selection import GridSearchCV
+from sklearn.model_selection import RandomizedSearchCV
+
 # global variable
-C = 4  # Параметр регуляризации SVM
-gamma = 0.02  # Train results: 99.433 / Verification results: 88.123
+# C = 4
+# gamma = 0.02
 test_size = 0.33
-# random_state = 45
-random_state = 1
+split_random_state = 1
+# model = svm.SVC(kernel='rbf', gamma=gamma, C=C)
 
 # Усечение сигнала слева и справа
-left_cup, right_cup, cup_flag = 100, 70, True
+left_cup, right_cup, cup_flag = 100, 70, False
 
 # Выбор классов
-'''
-classes = '0, 1, 4, 5, 6' / Train: 100.000 / Ver-on: 96.183 (cvup = 25) / Ver-on: 96.947 (cup = [100, 70])
-classes = '0, 2, 4, 6, 7' / Train: 100.000 / Ver-on: 96.947 (cvup = 25) / Ver-on: 98.473 (cup = [100, 70])
-classes = '1, 2, 4, 6, 7' / Train: 100.000 / Ver-on: 96.947 (cvup = 25) / Ver-on: 98.473 (cup = [100, 70])
-classes = '1, 5, 4, 6, 7' / Train: 100.000 / Ver-on: 96.947 (cvup = 25) / Ver-on: 96.183 (cup = [100, 70])
-'''
-
-# Train: 100.000 / Ver-on: 96.947 (cvup = 25) / Ver-on: 98.473 (cup = [100, 70], random_state = 45)
-classes = '0, 1, 4, 6, 7'
+# classes = '0, 1, 4, 5, 7'
+# classes = '0, 1, 4, 6, 7'
+classes = '0, 1, 4, 7, 9'
+# classes = '0, 1, 2, 3, 4, 5, 6, 7, 8, 9'
 
 file_name_data_set = '../data/data10mov_no_abs.mat'
 
-# Создаем экземплр SVM и обучаем классификатор
-# kernel = ('linear', 'poly', 'rbf', 'sigmoid', 'precomputed')
-model = svm.SVC(kernel='rbf', gamma=gamma, C=C)
-models = (svm.SVC(kernel='linear', C=C),
-          svm.LinearSVC(C=C),
-          svm.SVC(kernel='rbf', gamma=gamma, C=C))
-
-# title for the plots
-titles = ('SVC with linear kernel. One-vs-One.',
-          'LinearSVC (linear kernel). One-vs-All.',
-          'SVC with RBF kernel')
-
 qt = QuantileTransformer()
+
+# test global variable
+search_random_state = 10
+svc = svm.SVC(kernel='rbf')
+parameters = {
+    'C': np.arange(0.5, 5.1, 0.5),
+    'gamma': np.arange(0.01, 0.5, 0.01)
+}
+
+# clf = GridSearchCV(svc, parameters, cv=5, iid=False)
+clf = RandomizedSearchCV(svc, parameters, cv=5, iid=False,
+                         random_state=search_random_state)
 
 
 def read_mat(file_name):
@@ -68,14 +66,14 @@ def read_mat(file_name):
 def train(X_train, y_train, quantile_transform=True):
     if quantile_transform:
         X_train = qt.fit_transform(X_train)
-    model.fit(X_train, y_train)
-    return model.score(X_train, y_train)
+    clf.fit(X_train, y_train)
+    return clf.score(X_train, y_train)
 
 
 def test(X_test, y_test, quantile_transform=True):
     if quantile_transform:
         X_test = qt.transform(X_test)
-    return model.score(X_test, y_test)
+    return clf.score(X_test, y_test)
 
 
 def main():
@@ -91,14 +89,14 @@ def main():
         X.extend(value)
         y.extend([index] * len(value))
 
-    if cup_flag:  # optional
+    if cup_flag:                                          # optional
         for index, value in enumerate(X):
             X[index] = value[left_cup:-right_cup]
 
     start_time = time.time()                            # time begin (optional)
 
     X_train, X_test, y_train, y_test = train_test_split(
-        X, y, test_size=test_size, random_state=random_state)
+        X, y, test_size=test_size, random_state=split_random_state)
 
     train_results = train(X_train, y_train)
     tests_results = test(X_test, y_test)
@@ -111,8 +109,5 @@ def main():
     print(f"\nWarning! cup_flag = {cup_flag}")
 
 
-'''
-    
-'''
 if __name__ == '__main__':
     main()
