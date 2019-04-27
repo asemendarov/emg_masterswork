@@ -58,8 +58,6 @@ def test(X_test, y_test, quantile_transform=True):
 
 
 def main(print_result=True):
-    global model
-
     emg_data_set = read_mat(os.path.abspath(file_name_data_set))
 
     classes_list = list(set(map(int, classes.split(","))))
@@ -79,7 +77,7 @@ def main(print_result=True):
     for rsl in random_state_list:
         for cl in c_list:
             for gl in gamma_list:
-                model = svm.SVC(kernel='rbf', gamma=gl, C=cl)
+                model.C, model.gamma = cl, gl
 
                 X_train, X_test, y_train, y_test = train_test_split(
                     X, y, test_size=test_size, random_state=rsl)

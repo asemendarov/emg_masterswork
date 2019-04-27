@@ -16,7 +16,7 @@ ax2.set_title('Test Result')
 
 
 def plot(train_test_result):
-    train_result_list, test_result_list = [(result[1][1], result[1][0]) for result in train_test_result]
+    train_result_list, test_result_list = zip(*dict(train_test_result).values())
 
     ax1.plot(train_result_list, 'ro-')
     ax2.plot(test_result_list, 'ro-')
