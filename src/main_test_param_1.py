@@ -17,7 +17,7 @@ test_size = 0.33
 random_state = 1
 left_cup, right_cup, cup_flag = 100, 70, True  # Усечение сигнала слева и справа
 classes = '0, 1, 4, 6, 7'  # Выбор классов
-fileNameDataSet = '../data/data10mov_no_abs.mat'
+file_name_data_set = '../data/data10mov_no_abs.mat'
 model = svm.SVC(kernel='rbf', gamma=gamma, C=C)  # kernel = ('linear', 'poly', 'rbf', 'sigmoid', 'precomputed')
 qt = QuantileTransformer()
 
@@ -57,18 +57,15 @@ def test(X_test, y_test, quantile_transform=True):
     return model.score(X_test, y_test)
 
 
-def main():
+def main(print_result=True):
     global model
 
-    emg_dataset = read_mat(os.path.abspath(fileNameDataSet))
+    emg_data_set = read_mat(os.path.abspath(file_name_data_set))
 
-    classes_list = list(map(int, classes.split(",")))
+    classes_list = list(set(map(int, classes.split(","))))
 
     X, y = [], []
-    for index, value in enumerate(emg_dataset):
-        if not (index in classes_list):  # optional
-            continue
-
+    for index, value in enumerate(emg_data_set.iloc[classes_list]):
         X.extend(value)
         y.extend([index] * len(value))
 
@@ -92,9 +89,10 @@ def main():
 
                 result[(rsl, cl, gl)] = (tests_results, train_results)
 
-    result = np.array(sorted(result.items(), key=lambda kv: kv[1]))
+    result = sorted(result.items(), key=lambda kv: kv[1])
 
-    print(result, f"Len result: {len(result)}", f"Time: {time.time() - start_time} seconds", sep='\n\n')
+    if print_result:
+        print(np.array(result), f"Len result: {len(result)}", f"Time: {time.time() - start_time} seconds", sep='\n\n')
 
     return result
 

@@ -25,9 +25,6 @@ test_size = 0.33
 random_state = 1
 # model = svm.SVC(kernel='rbf', gamma=gamma, C=C)
 
-# Усечение сигнала слева и справа
-left_cup, right_cup, cup_flag = 100, 70, False
-
 file_name_data_set = '../data/data10mov_no_abs.mat'
 
 qt = QuantileTransformer()
@@ -83,16 +80,9 @@ def test(X_test, y_test, quantile_transform=True):
 
 def combinations_multiprocessing(data, classes_list):
     X, y = [], []
-    for index, value in enumerate(data):
-        if not (index in classes_list):  # optional
-            continue
-
+    for index, value in enumerate(data.iloc[classes_list]):
         X.extend(value)
         y.extend([index] * len(value))
-
-    if cup_flag:  # optional
-        for index, value in enumerate(X):
-            X[index] = value[left_cup:-right_cup]
 
     X_train, X_test, y_train, y_test = train_test_split(
         X, y, test_size=test_size, random_state=random_state)
@@ -106,7 +96,7 @@ def combinations_multiprocessing(data, classes_list):
 def main(print_result=True) -> list:
     emg_dataset = read_mat(os.path.abspath(file_name_data_set))
 
-    classes_list = list(map(int, classes.split(",")))
+    classes_list = list(set(map(int, classes.split(","))))
 
     start_time = time.time()
 
@@ -124,7 +114,6 @@ def main(print_result=True) -> list:
 
     if print_result:
         print(np.array(result), f"Len result: {len(result)}", f"Time: {time.time() - start_time} seconds", sep='\n\n')
-        print(f"\nWarning! cup_flag = {cup_flag}")
 
     return result
 

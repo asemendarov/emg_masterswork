@@ -20,9 +20,6 @@ test_size = 0.33
 split_random_state = 1
 # model = svm.SVC(kernel='rbf', gamma=gamma, C=C)
 
-# Усечение сигнала слева и справа
-left_cup, right_cup, cup_flag = 100, 70, False
-
 # Выбор классов
 # classes = '0, 1, 4, 5, 7'
 # classes = '0, 1, 4, 6, 7'
@@ -79,19 +76,12 @@ def test(X_test, y_test, quantile_transform=True):
 def main():
     emg_data_set = read_mat(os.path.abspath(file_name_data_set))
 
-    classes_list = list(map(int, classes.split(",")))
+    classes_list = list(set(map(int, classes.split(","))))
 
     X, y = [], []
-    for index, value in enumerate(emg_data_set):
-        if not (index in classes_list):  # optional
-            continue
-
+    for index, value in enumerate(emg_data_set.iloc[classes_list]):
         X.extend(value)
         y.extend([index] * len(value))
-
-    if cup_flag:                                          # optional
-        for index, value in enumerate(X):
-            X[index] = value[left_cup:-right_cup]
 
     start_time = time.time()                            # time begin (optional)
 
@@ -105,8 +95,6 @@ def main():
 
     print(f"Train result: {train_results:.2%}")
     print(f"Verification result: {tests_results:.3%}")
-
-    print(f"\nWarning! cup_flag = {cup_flag}")
 
 
 if __name__ == '__main__':
