@@ -26,7 +26,7 @@ def print_bar(data):
     plt.xticks(index_list, kernel_list)
 
     plt.legend()
-    plt.grid(axis='y')
+    plt.grid(axis='y', which='both')
     plt.show()
 
 
