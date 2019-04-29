@@ -44,7 +44,7 @@ clf = RandomizedSearchCV(svc, parameters, cv=5, iid=False,
 
 
 # test global variable
-kernel_list = ('linear', 'poly', 'rbf', 'sigmoid')
+kernel_list = ('linear', 'poly', 'rbf', 'sigmoid', 'precomputed')
 
 
 def read_mat(file_name):
@@ -66,6 +66,11 @@ def read_mat(file_name):
 
 def quantile_transform(X_train, X_test):
     return qt.fit_transform(X_train), qt.transform(X_test)
+
+
+def convert_to_gram_matrix(X_train, X_test):
+    X_train_T = np.array(X_train).T
+    return np.dot(X_train, X_train_T), np.dot(X_test, X_train_T)
 
 
 def train_and_test(X_train, y_train, X_test, y_test):
@@ -94,6 +99,9 @@ def main(print_result=True) -> list:
 
     for kernel in kernel_list:
         svc.kernel = kernel
+
+        if kernel == 'precomputed':
+            X_train, X_test = convert_to_gram_matrix(X_train, X_test)
 
         train_results, tests_results = train_and_test(X_train, y_train, X_test, y_test)
 
