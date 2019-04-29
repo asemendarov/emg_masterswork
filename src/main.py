@@ -30,7 +30,6 @@ file_name_data_set = '../data/data10mov_no_abs.mat'
 
 qt = QuantileTransformer()
 
-# test global variable
 search_random_state = 10
 svc = svm.SVC(kernel='rbf')
 parameters = {
