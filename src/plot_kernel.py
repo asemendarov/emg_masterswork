@@ -5,10 +5,13 @@ import src.main_kernel_search as kernel_search
 
 
 # global variable
-fig, ax = plt.subplots(figsize=(8, 6))
+fig, ax = plt.subplots(nrows=1, ncols=2, figsize=(12, 6))
+ax1, ax2 = ax.flatten()
+ax1.set_title('Quantile Transform')
+ax2.set_title('No Quantile Transform')
 
 
-def print_bar(data):
+def set_bar(data, ax):
     data = dict(data)
 
     kernel_list = data.keys()
@@ -23,16 +26,24 @@ def print_bar(data):
     ax.bar(x1, test_result_list, width=0.4, label='test_result')
     ax.bar(x2, train_result_list, width=0.4, label='train_result')
 
-    plt.xticks(index_list, kernel_list)
+    ax.set_xticks(range(len(kernel_list)))
+    ax.set_xticklabels(kernel_list)
 
-    plt.legend()
-    plt.grid(axis='y', which='both')
+    ax.grid(axis='y')
+
+
+def show_bar():
+    ax1.legend()
     plt.show()
 
 
 def main():
-    out_kernel_search = kernel_search.main()
-    print_bar(out_kernel_search)
+    for flag in (True, False):
+        kernel_search.quantile_transform_flag = flag
+        out_kernel_search = kernel_search.main()
+        set_bar(out_kernel_search, ax1 if flag else ax2)
+
+    show_bar()
 
 
 if __name__ == '__main__':

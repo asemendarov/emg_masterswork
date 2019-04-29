@@ -45,6 +45,7 @@ clf = RandomizedSearchCV(svc, parameters, cv=5, iid=False,
 
 # test global variable
 kernel_list = ('linear', 'poly', 'rbf', 'sigmoid', 'precomputed')
+quantile_transform_flag = True
 
 
 def read_mat(file_name):
@@ -95,7 +96,8 @@ def main(print_result=True) -> list:
     X_train, X_test, y_train, y_test = train_test_split(
         X, y, test_size=test_size, random_state=split_random_state)
 
-    X_train, X_test = quantile_transform(X_train, X_test)
+    if quantile_transform_flag:
+        X_train, X_test = quantile_transform(X_train, X_test)
 
     for kernel in kernel_list:
         svc.kernel = kernel
