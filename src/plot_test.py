@@ -4,6 +4,8 @@ import matplotlib.pyplot as plt
 
 from mpl_toolkits.mplot3d import Axes3D
 
+plt.style.use('ggplot')
+
 # x = np.arange(-6, 6, 0.3)
 # y = np.arange(-6, 6, 0.3)
 #

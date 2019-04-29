@@ -3,6 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import src.main_kernel_search as kernel_search
 
+plt.style.use('ggplot')
 
 # global variable
 fig, ax = plt.subplots(nrows=1, ncols=2, figsize=(12, 6))

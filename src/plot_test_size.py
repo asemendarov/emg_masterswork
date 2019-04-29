@@ -3,6 +3,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import src.main_test_size_search as ts_search
 
+plt.style.use('ggplot')
+
 # global variable
 test_size_list = np.arange(0.1, 0.51, 0.1)
 

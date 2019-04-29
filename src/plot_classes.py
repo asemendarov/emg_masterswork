@@ -3,6 +3,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import src.main_classes_search as cl_search
 
+plt.style.use('ggplot')
+
 # global variable
 begin_class = 9
 end_class = 10
