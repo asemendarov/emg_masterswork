@@ -45,17 +45,13 @@ def read_mat(file_name):
     return data
 
 
-def train(X_train, y_train, quantile_transform=True):
-    if quantile_transform:
-        X_train = qt.fit_transform(X_train)
+def quantile_transform(X_train, X_test):
+    return qt.fit_transform(X_train), qt.transform(X_test)
+
+
+def train_and_test(X_train, y_train, X_test, y_test):
     model.fit(X_train, y_train)
-    return model.score(X_train, y_train)
-
-
-def test(X_test, y_test, quantile_transform=True):
-    if quantile_transform:
-        X_test = qt.transform(X_test)
-    return model.score(X_test, y_test)
+    return model.score(X_train, y_train), model.score(X_test, y_test)
 
 
 def main(print_result=True):
@@ -81,8 +77,9 @@ def main(print_result=True):
         X_train, X_test, y_train, y_test = train_test_split(
             X, y, test_size=test_size, random_state=random_state)
 
-        train_results = train(X_train, y_train)
-        tests_results = test(X_test, y_test)
+        X_train, X_test = quantile_transform(X_train, X_test)
+
+        train_results, tests_results = train_and_test(X_train, y_train, X_test, y_test)
 
         result[tuple(new_classes)] = (tests_results, train_results)
 
