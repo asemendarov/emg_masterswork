@@ -6,6 +6,8 @@ import scipy.io as sio
 import sklearn.svm as svm
 import matplotlib.pyplot as plt
 
+from numpy.core import multiarray
+
 from sklearn import svm
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import QuantileTransformer
@@ -68,6 +70,12 @@ def train_and_test(X_train, y_train, X_test, y_test):
     return clf.score(X_train, y_train), clf.score(X_test, y_test)
 
 
+def duplicate_array(shape, src, dtype=None, order='C', casting='unsafe'):
+    a = np.empty(shape, dtype=dtype, order=order)
+    multiarray.copyto(a, src, casting=casting)
+    return a
+
+
 def main():
     emg_data_set = read_mat(os.path.abspath(file_name_data_set))
 
@@ -77,6 +85,7 @@ def main():
     for index, value in enumerate(emg_data_set.iloc[classes_list]):
         X.extend(value)
         y.extend([index] * len(value))
+        # y.extend(duplicate_array(len(value), index))  # результат хуже
 
     start_time = time.time()                            # time begin (optional)
 
