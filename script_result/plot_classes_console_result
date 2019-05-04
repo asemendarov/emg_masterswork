@@ -1,0 +1,146 @@
+1. ----------------------------
+def main():
+    cl_search.classes = '0, 1, 2, 3, 4, 5, 6, 7, 8, 9'
+    cl_search.svc.kernel = 'rbf'
+
+    start_time = time.time()
+
+    result = list()
+
+    for combinations_len in range(begin_combinations_len, end_combinations_len + 1):
+        print(f'Start ({combinations_len}/{end_combinations_len})')
+
+        cl_search.combinations_len = combinations_len
+        out_search = cl_search.main(print_result=False)
+        result.append(out_search[-1])
+
+        print(f'Stop ({combinations_len}/{end_combinations_len}). Time: {time.time() - start_time} seconds')
+
+    # result = sorted(result, key=lambda kv: kv[1])
+
+    print('\n', np.array(result))
+
+    plot(result)
+
+--------- Резуультат -----------
+
+# sort (test, train)
+
+Start (2/10)
+Stop (2/10). Time: 20.424161195755005 seconds
+Start (3/10)
+Stop (3/10). Time: 90.05959033966064 seconds
+Start (4/10)
+Stop (4/10). Time: 287.32018756866455 seconds
+Start (5/10)
+Stop (5/10). Time: 668.714024066925 seconds
+Start (6/10)
+Stop (6/10). Time: 1132.9665195941925 seconds
+Start (7/10)
+Stop (7/10). Time: 1479.177907705307 seconds
+Start (8/10)
+Stop (8/10). Time: 1646.1492755413055 seconds
+Start (9/10)
+Stop (9/10). Time: 1698.1095447540283 seconds
+Start (10/10)
+Stop (10/10). Time: 1712.9377763271332 seconds
+
+ [[(7, 9) (1.0, 1.0)]
+ [(0, 7, 8) (1.0, 1.0)]
+ [(0, 1, 4, 5) (1.0, 1.0)]
+ [(0, 1, 4, 7, 9) (0.9847328244274809, 1.0)]
+ [(0, 1, 4, 5, 6, 7) (0.9681528662420382, 0.9968454258675079)]
+ [(0, 1, 2, 4, 5, 6, 7) (0.9453551912568307, 1.0)]
+ [(0, 1, 2, 4, 5, 6, 7, 8) (0.9090909090909091, 1.0)]
+ [(0, 2, 3, 4, 5, 6, 7, 8, 9) (0.8425531914893617, 0.9957983193277311)]
+ [(0, 1, 2, 3, 4, 5, 6, 7, 8, 9) (0.7547892720306514, 0.996219281663516)]]
+
+# sort (train, test)
+
+ Start (2/10)
+Stop (2/10). Time: 18.605356693267822 seconds
+Start (3/10)
+Stop (3/10). Time: 85.72359728813171 seconds
+Start (4/10)
+Stop (4/10). Time: 266.22645592689514 seconds
+Start (5/10)
+Stop (5/10). Time: 592.7485547065735 seconds
+Start (6/10)
+Stop (6/10). Time: 1011.9870219230652 seconds
+Start (7/10)
+Stop (7/10). Time: 1329.8416550159454 seconds
+Start (8/10)
+Stop (8/10). Time: 1491.4974963665009 seconds
+Start (9/10)
+Stop (9/10). Time: 1542.0913598537445 seconds
+Start (10/10)
+Stop (10/10). Time: 1556.775178194046 seconds
+
+ [[(7, 9) (1.0, 1.0)]
+ [(0, 7, 8) (1.0, 1.0)]
+ [(0, 1, 4, 5) (1.0, 1.0)]
+ [(0, 1, 4, 7, 9) (1.0, 0.9847328244274809)]
+ [(0, 2, 4, 5, 6, 7) (1.0, 0.9426751592356688)]
+ [(0, 1, 2, 4, 5, 6, 7) (1.0, 0.9453551912568307)]
+ [(0, 1, 2, 4, 5, 6, 7, 8) (1.0, 0.9090909090909091)]
+ [(0, 1, 2, 3, 4, 5, 6, 7, 9) (1.0, 0.8297872340425532)]
+ [(0, 1, 2, 3, 4, 5, 6, 7, 8, 9) (0.996219281663516, 0.7547892720306514)]]
+
+
+2. ----------------------------
+
+ def main():
+    cl_search.classes = '0, 1, 2, 3, 4, 5, 6, 7, 8, 9'
+    cl_search.svc.kernel = 'poly'
+
+    start_time = time.time()
+
+    result = list()
+
+    for combinations_len in range(begin_combinations_len, end_combinations_len + 1):
+        print(f'Start ({combinations_len}/{end_combinations_len})')
+
+        cl_search.combinations_len = combinations_len
+        out_search = cl_search.main(print_result=False)
+        result.append(out_search[-1])
+
+        print(f'Stop ({combinations_len}/{end_combinations_len}). Time: {time.time() - start_time} seconds')
+
+    # result = sorted(result, key=lambda kv: kv[1])
+
+    print('\n', np.array(result))
+
+    plot(result)
+
+--------- Резуультат -----------
+
+# sort (train, test)
+
+Start (2/10)
+Stop (2/10). Time: 15.516148805618286 seconds
+Start (3/10)
+Stop (3/10). Time: 65.78347301483154 seconds
+Start (4/10)
+Stop (4/10). Time: 195.65831398963928 seconds
+Start (5/10)
+Stop (5/10). Time: 412.3317975997925 seconds
+Start (6/10)
+Stop (6/10). Time: 693.7624979019165 seconds
+Start (7/10)
+Stop (7/10). Time: 907.7350957393646 seconds
+Start (8/10)
+Stop (8/10). Time: 1014.6706438064575 seconds
+Start (9/10)
+Stop (9/10). Time: 1050.0359251499176 seconds
+Start (10/10)
+Stop (10/10). Time: 1060.313532114029 seconds
+
+ [[(0, 5) (1.0, 1.0)]
+ [(0, 1, 4) (1.0, 1.0)]
+ [(0, 1, 5, 6) (1.0, 0.9809523809523809)]
+ [(0, 4, 5, 6, 8) (1.0, 0.916030534351145)]
+ [(0, 1, 4, 5, 6, 9) (1.0, 0.9171974522292994)]
+ [(0, 1, 2, 4, 5, 6, 7) (1.0, 0.9234972677595629)]
+ [(0, 1, 2, 4, 5, 6, 7, 9) (1.0, 0.8660287081339713)]
+ [(0, 1, 2, 3, 4, 5, 6, 8, 9) (0.9978991596638656, 0.8042553191489362)]
+ [(0, 1, 2, 3, 4, 5, 6, 7, 8, 9) (0.9829867674858223, 0.7432950191570882)]]

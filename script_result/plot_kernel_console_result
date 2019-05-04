@@ -1,0 +1,52 @@
+1. ----------------------------
+def main():
+    kernel_search.kernel_list = ('linear', 'poly', 'rbf', 'sigmoid')
+    kernel_search.classes = '0, 1, 2, 3, 4, 5, 6, 7, 8, 9'
+
+    # for flag in (True, False):
+    flag = True
+    kernel_search.quantile_transform_flag = flag
+    out_kernel_search = kernel_search.main()
+    set_bar(out_kernel_search, ax1 if flag else ax2)
+
+    show_bar()
+
+--------- Резуультат -----------
+[['sigmoid' (0.07662835249042145, 0.11153119092627599)]
+ ['linear' (0.5977011494252874, 0.998109640831758)]
+ ['poly' (0.735632183908046, 0.998109640831758)]
+ ['rbf' (0.7432950191570882, 0.9867674858223062)]]
+
+Len result: 4
+
+Time: 41.11523985862732 seconds
+
+2. ---------------------------
+def main():
+    kernel_search.kernel_list = ('linear', 'rbf', 'sigmoid')
+    kernel_search.classes = '0, 1, 2, 3, 4, 5, 6, 7, 8, 9'
+
+    for flag in (True, False):
+        kernel_search.quantile_transform_flag = flag
+        out_kernel_search = kernel_search.main()
+        set_bar(out_kernel_search, ax1 if flag else ax2)
+
+    show_bar()
+
+--------- Резуультат -----------
+[['sigmoid' (0.07662835249042145, 0.11153119092627599)]
+ ['linear' (0.5977011494252874, 0.998109640831758)]
+ ['rbf' (0.7432950191570882, 0.9867674858223062)]]
+
+Len result: 3
+
+Time: 33.75187134742737 seconds
+[['rbf' (0.07662835249042145, 0.998109640831758)]
+ ['sigmoid' (0.12643678160919541, 0.12476370510396975)]
+ ['linear' (0.7432950191570882, 0.998109640831758)]]
+
+Len result: 3
+
+Time: 30.60591697692871 seconds
+
+3. ---------------------------
