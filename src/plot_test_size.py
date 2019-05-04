@@ -14,11 +14,10 @@ fig, ax = plt.subplots(figsize=(8, 6))
 def plot(data):
     test_result_list, train_result_list = zip(*dict(data).values())
 
-    ax.plot(test_size_list, train_result_list, 'bo-', label='train_result')
-    ax.plot(test_size_list, test_result_list, 'go-', label='test_result')
+    ax.plot(test_size_list, train_result_list, 'bo-', label='Train')
+    ax.plot(test_size_list, test_result_list, 'go-', label='Test')
 
     plt.legend()
-    plt.grid()
     plt.show()
 
 

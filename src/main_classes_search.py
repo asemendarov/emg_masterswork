@@ -30,7 +30,7 @@ file_name_data_set = '../data/data10mov_no_abs.mat'
 qt = QuantileTransformer()
 
 # test global variable
-combinations_len = 9
+combinations_len = 5
 search_random_state = 10
 
 # Выбор классов
@@ -38,6 +38,7 @@ search_random_state = 10
 classes = '0, 1, 2, 3, 4, 5, 6, 7, 8, 9'
 
 svc = svm.SVC(kernel='rbf')
+# svc = svm.SVC(kernel='poly')
 parameters = {
     'C': np.arange(1, 5.1, 1),
     'gamma': np.arange(0.01, 0.1, 0.01)
@@ -76,7 +77,10 @@ def train_and_test(X_train, y_train, X_test, y_test):
 
 def combinations_multiprocessing(data, classes_list):
     X, y = [], []
-    for index, value in enumerate(data.iloc[classes_list]):
+    for index, value in enumerate(data):
+        if not (index in classes_list):  # optional
+            continue
+
         X.extend(value)
         y.extend([index] * len(value))
 
@@ -87,7 +91,8 @@ def combinations_multiprocessing(data, classes_list):
 
     train_results, tests_results = train_and_test(X_train, y_train, X_test, y_test)
 
-    return classes_list, (tests_results, train_results)
+    # return classes_list, (tests_results, train_results) # 1
+    return classes_list, (train_results, tests_results)   # 2
 
 
 def main(print_result=True) -> list:
