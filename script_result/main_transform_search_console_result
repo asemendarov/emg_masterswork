@@ -1,0 +1,32 @@
+---- [StandardScaler] Data after standard scaling
+Train result: 100.00%
+Verification result: 55.725%
+Time: 3.314774990081787 seconds
+---- [MinMaxScaler] Data after min-max scaling
+Train result: 100.00%
+Verification result: 96.183%
+Time: 5.549223184585571 seconds
+---- [MaxAbsScaler] Data after max-abs scaling
+Train result: 100.00%
+Verification result: 96.183%
+Time: 7.814925193786621 seconds
+---- [RobustScaler] Data after robust scaling
+Train result: 100.00%
+Verification result: 29.771%
+Time: 11.225386619567871 seconds
+---- [PowerTransformer] Data after power transformation (Yeo-Johnson)
+Train result: 100.00%
+Verification result: 51.145%
+Time: 15.569282293319702 seconds
+---- [QuantileTransformer] Data after quantile transformation (gaussian pdf)
+Train result: 100.00%
+Verification result: 16.031%
+Time: 19.59999680519104 seconds
+---- [QuantileTransformer] Data after quantile transformation (uniform pdf)
+Train result: 100.00%
+Verification result: 99.237%
+Time: 23.516976356506348 seconds
+---- [Normalizer] Data after sample-wise L2 normalizing
+Train result: 90.91%
+Verification result: 93.893%
+Time: 25.86080551147461 seconds
