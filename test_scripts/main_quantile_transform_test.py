@@ -87,12 +87,27 @@ def main():
     print(X.shape)
 
     from sklearn.preprocessing import quantile_transform
+    from sklearn.preprocessing import minmax_scale
 
-    fig, ax = plt.subplots(nrows=1, ncols=2, figsize=(12, 6))
-    ax1, ax2 = ax.flatten()
+    fig, ax = plt.subplots(nrows=1, ncols=3, figsize=(18, 6))
+    ax1, ax2, ax3 = ax.flatten()
 
-    ax1.plot(X[1, :])
-    ax2.plot(quantile_transform(X)[1, :])
+    ax1.set_title('Data')
+    ax2.set_title('Quantile Transform')
+    ax3.set_title('Min-Max Scale')
+
+    ax1.plot(X[30:50, 1])
+    ax2.plot(quantile_transform(X)[30:50, 1])
+    ax3.plot(minmax_scale(X[30:50, 1]))
+
+    X_qt = quantile_transform(X)
+    X_mm = minmax_scale(X)
+
+    print(X_qt)
+    print(X_mm)
+
+    # ax1.plot(X[1, :])
+    # ax2.plot(quantile_transform(X)[1, :])
     plt.show()
 
 
