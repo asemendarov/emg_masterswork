@@ -23,11 +23,11 @@ from sklearn.preprocessing import QuantileTransformer
 from sklearn.preprocessing import PowerTransformer
 
 # global variable
-C = 3
-gamma = 0.02
+# C = 3
+# gamma = 0.02
 test_size = 0.33
 split_random_state = 1
-model = svm.SVC(kernel='rbf', gamma=gamma, C=C)
+# model = svm.SVC(kernel='rbf', gamma=gamma, C=C)
 
 # Выбор классов
 classes = '0, 1, 4, 5, 6'
@@ -40,17 +40,17 @@ file_name_data_set = '../data/data10mov_no_abs.mat'
 
 # qt = QuantileTransformer()
 
-# search_random_state = 10
-# svc = svm.SVC()
-# parameters = {
-#     'C': np.arange(0.5, 5.1, 0.5),
-#     'gamma': np.arange(0.01, 0.5, 0.01),
-#     # 'degree': np.arange(1, 5),
-#     # 'coef0': np.arange(1, 5)
-# }
-#
-# clf = RandomizedSearchCV(svc, parameters, cv=5, iid=False,
-#                          random_state=search_random_state)
+search_random_state = 10
+svc = svm.SVC()
+parameters = {
+    'C': np.arange(0.5, 5.1, 0.5),
+    'gamma': np.arange(0.01, 0.5, 0.01),
+    # 'degree': np.arange(1, 5),
+    # 'coef0': np.arange(1, 5)
+}
+
+clf = RandomizedSearchCV(svc, parameters, cv=5, iid=False,
+                         random_state=search_random_state)
 
 # test global variable
 kernel_list = ('rbf',)
@@ -100,10 +100,10 @@ def convert_to_gram_matrix(X_train, X_test):
 
 
 def train_and_test(X_train, y_train, X_test, y_test):
-    # clf.fit(X_train, y_train)
-    # return clf.score(X_train, y_train), clf.score(X_test, y_test)
-    model.fit(X_train, y_train)
-    return model.score(X_train, y_train), model.score(X_test, y_test)
+    clf.fit(X_train, y_train)
+    return clf.score(X_train, y_train), clf.score(X_test, y_test)
+    # model.fit(X_train, y_train)
+    # return model.score(X_train, y_train), model.score(X_test, y_test)
 
 
 def main():
@@ -122,8 +122,8 @@ def main():
     new_X_train, new_X_test = [], []
 
     for kernel in kernel_list:
-        # svc.kernel = kernel
-        model.kernel = kernel
+        svc.kernel = kernel
+        # model.kernel = kernel
 
         print(f'---- Kernel: {kernel}')
 
