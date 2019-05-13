@@ -79,15 +79,22 @@ def train_and_test(X_train, y_train, X_test, y_test):
     return clf.score(X_train, y_train), clf.score(X_test, y_test)
 
 
+def _X(data):
+    return np.vstack(data)
+
+
+def _y(classes, data_len):
+    return np.ravel(np.array(classes * data_len).reshape((data_len, -1)).T)
+
+
 def main(print_result=True) -> list:
     emg_data_set = read_mat(os.path.abspath(file_name_data_set))
 
     classes_list = list(set(map(int, classes.split(","))))
 
-    X, y = [], []
-    for index, value in enumerate(emg_data_set.iloc[classes_list]):
-        X.extend(value)
-        y.extend([index] * len(value))
+    emg_data_set = emg_data_set.iloc[classes_list]
+
+    X, y = _X(emg_data_set), _y(classes_list, len(emg_data_set[0]))
 
     start_time = time.time()                            # time begin (optional)
 

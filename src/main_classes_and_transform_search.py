@@ -110,14 +110,18 @@ def runtime_estimate(index, C, time):
     return C * time / index
 
 
-def combinations_multiprocessing(data, classes_list):
-    X, y = [], []
-    for index, value in enumerate(data):
-        if not (index in classes_list):  # optional
-            continue
+def _X(data):
+    return np.vstack(data)
 
-        X.extend(value)
-        y.extend([index] * len(value))
+
+def _y(classes, data_len):
+    return np.ravel(np.array(classes * data_len).reshape((data_len, -1)).T)
+
+
+def combinations_multiprocessing(data, classes_list):
+    emg_data_set = data.iloc[list(classes_list)]
+
+    X, y = _X(emg_data_set), _y(classes_list, len(emg_data_set[0]))
 
     X_train, X_test, y_train, y_test = train_test_split(
         X, y, test_size=test_size, random_state=random_state)
