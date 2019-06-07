@@ -13,6 +13,14 @@ from sklearn.preprocessing import QuantileTransformer
 from sklearn.model_selection import GridSearchCV
 from sklearn.model_selection import RandomizedSearchCV
 
+from sklearn.preprocessing import MinMaxScaler
+from sklearn.preprocessing import MaxAbsScaler
+from sklearn.preprocessing import StandardScaler
+from sklearn.preprocessing import RobustScaler
+from sklearn.preprocessing import Normalizer
+from sklearn.preprocessing import QuantileTransformer
+from sklearn.preprocessing import PowerTransformer
+
 # global variable
 # C = 4
 # gamma = 0.02
@@ -32,20 +40,35 @@ qt = QuantileTransformer()
 
 search_random_state = 10
 svc = svm.SVC()
+
+algorithm = QuantileTransformer(output_distribution='uniform')
+
 parameters = {
-    'C': np.arange(0.5, 5.1, 0.5),
-    'gamma': np.arange(0.01, 0.5, 0.01),
-    'degree': np.arange(1, 5),
-    'coef0': np.arange(1, 5)
+    'linear': {
+        'C': np.arange(0.5, 10.1, 0.5),
+    },
+    'rbf': {
+        'C': np.arange(0.5, 5.1, 0.5),
+        'gamma': np.arange(0.01, 0.5, 0.01),
+    },
+    'sigmoid': {
+        'C': np.arange(0.5, 5.1, 0.5),
+        'gamma': np.arange(0.01, 0.5, 0.01),
+        'coef0': np.arange(1, 5),
+    },
+    'poly': {
+        'C': np.arange(0.5, 5.1, 0.5),
+        'gamma': np.arange(0.01, 0.5, 0.01),
+        'coef0': np.arange(1, 5),
+        'degree': np.arange(1, 5)
+    },
 }
 
-clf = RandomizedSearchCV(svc, parameters, cv=5, iid=False,
+clf = RandomizedSearchCV(svc, parameters['rbf'], cv=5, iid=False,
                          random_state=search_random_state)
 
-
 # test global variable
-kernel_list = ('linear', 'poly', 'rbf', 'sigmoid', 'precomputed')
-quantile_transform_flag = True
+kernel_list = ('linear', 'poly', 'rbf', 'sigmoid')
 
 
 def read_mat(file_name):
@@ -65,8 +88,8 @@ def read_mat(file_name):
     return data
 
 
-def quantile_transform(X_train, X_test):
-    return qt.fit_transform(X_train), qt.transform(X_test)
+def preprocessing_data(algorithm, X_train, X_test):
+    return algorithm.fit_transform(X_train), algorithm.transform(X_test)
 
 
 def convert_to_gram_matrix(X_train, X_test):
@@ -103,14 +126,11 @@ def main(print_result=True) -> list:
     X_train, X_test, y_train, y_test = train_test_split(
         X, y, test_size=test_size, random_state=split_random_state)
 
-    if quantile_transform_flag:
-        X_train, X_test = quantile_transform(X_train, X_test)
+    X_train, X_test = preprocessing_data(algorithm, X_train, X_test)
 
     for kernel in kernel_list:
         svc.kernel = kernel
-
-        if kernel == 'precomputed':
-            X_train, X_test = convert_to_gram_matrix(X_train, X_test)
+        clf.param_distributions = parameters[kernel]
 
         train_results, tests_results = train_and_test(X_train, y_train, X_test, y_test)
 
