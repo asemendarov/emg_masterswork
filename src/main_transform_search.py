@@ -43,17 +43,19 @@ file_name_data_set = '../data/data10mov_no_abs.mat'
 search_random_state = 10
 svc = svm.SVC()
 parameters = {
-    'C': np.arange(0.5, 5.1, 0.5),
-    'gamma': np.arange(0.01, 0.5, 0.01),
-    # 'degree': np.arange(1, 5),
-    # 'coef0': np.arange(1, 5)
+    'C': np.arange(1, 5.1, 1),
+    'gamma': np.arange(0.01, 0.1, 0.01),
+    'coef0': np.arange(1, 5),
+    'degree': np.arange(1, 5)
 }
 
+# clf = GridSearchCV(svc, parameters, cv=5, iid=False)
 clf = RandomizedSearchCV(svc, parameters, cv=5, iid=False,
                          random_state=search_random_state)
 
 # test global variable
 kernel_list = ('rbf',)
+# kernel_list = ('poly',)
 # kernel_list = ('sigmoid', 'precomputed')
 # kernel_list = ('linear', 'poly', 'rbf', 'sigmoid')
 # kernel_list = ('linear', 'poly', 'rbf', 'sigmoid', 'precomputed')
@@ -146,7 +148,8 @@ def main():
 
             train_results, tests_results = train_and_test(new_X_train, y_train, new_X_test, y_test)
 
-            result[name] = (train_results, tests_results, time.time() - start_time)
+            # result[name] = (train_results, tests_results, time.time() - start_time)
+            result[name] = (tests_results, train_results, time.time() - start_time)
 
             print(f"[{name}] {title}")
             # print(f"Train result: {train_results:.2%}")
