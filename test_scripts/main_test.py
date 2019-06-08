@@ -6,8 +6,6 @@ import scipy.io as sio
 import sklearn.svm as svm
 import matplotlib.pyplot as plt
 
-from numpy.core import multiarray
-
 from sklearn.svm import SVC
 
 from sklearn.model_selection import train_test_split
@@ -49,10 +47,10 @@ algorithms = {
     'Min-Max Scaler': MinMaxScaler(),
     'Max-Abs Scaler': MaxAbsScaler(),
     'Normalizer': Normalizer(),
-    # 'Robust Scaler': RobustScaler(quantile_range=(25, 75)),
-    # 'Yeo-Johnson Power Transformer': PowerTransformer(method='yeo-johnson'),
-    # 'Uniform Quantile Transformer': QuantileTransformer(output_distribution='uniform'),
-    # 'Normal Quantile Transformer': QuantileTransformer(output_distribution='normal'),
+    'Robust Scaler': RobustScaler(quantile_range=(25, 75)),
+    'Yeo-Johnson Power Transformer': PowerTransformer(method='yeo-johnson'),
+    'Uniform Quantile Transformer': QuantileTransformer(output_distribution='uniform'),
+    'Normal Quantile Transformer': QuantileTransformer(output_distribution='normal'),
 }
 
 parameters = {
@@ -60,8 +58,8 @@ parameters = {
     #     'C': np.arange(0.5, 10.1, 0.5),
     # },
     'rbf': {
-        'C': np.arange(0.5, 5.1, 0.5),
-        'gamma': np.arange(0.01, 0.5, 0.01),
+        'C': np.arange(1, 5.1, 1),
+        'gamma': np.arange(0.01, 0.2, 0.01),
     },
     # 'sigmoid': {
     #     'C': np.arange(0.5, 5.1, 0.5),
